@@ -53,6 +53,7 @@
             font-family: 'Poppins', sans-serif;
             background-color: #f8f9fa;
             color: #333;
+            overflow-x: hidden;
         }
         
         .gradient-bg {
@@ -229,6 +230,65 @@
             top: 30px;
             transform: rotate(45deg);
         }
+
+        /* Mobile Menu Styles */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background-color: white;
+            z-index: 1000;
+            transition: right 0.3s ease;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            padding-top: 70px;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 15px 20px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s;
+        }
+
+        .mobile-menu a:hover {
+            background-color: #f5f5f5;
+            color: #25D366;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100">
@@ -251,7 +311,7 @@
                     <button class="px-4 py-2 rounded-full bg-white text-primary font-semibold hover:bg-gray-100 transition duration-300">
                         Entrar
                     </button>
-                    <button class="md:hidden text-2xl">
+                    <button id="mobile-menu-button" class="md:hidden text-2xl">
                         <i class="fas fa-bars"></i>
                     </button>
                 </div>
@@ -259,6 +319,25 @@
         </div>
     </header>
 
+    <!-- Mobile Menu -->
+    <div class="overlay" id="overlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="close-menu" id="closeMenu">
+            <i class="fas fa-times"></i>
+        </div>
+        <a href="#" class="hover:text-primary">Início</a>
+        <a href="#" class="hover:text-primary">Recursos</a>
+        <a href="#" class="hover:text-primary">Preços</a>
+        <a href="#" class="hover:text-primary">FAQ</a>
+        <a href="#" class="hover:text-primary">Contato</a>
+        <div class="p-4">
+            <button class="w-full px-4 py-2 rounded-full bg-primary text-white font-semibold hover:bg-opacity-90 transition duration-300">
+                Entrar
+            </button>
+        </div>
+    </div>
+
+    <!-- Resto do conteúdo permanece igual -->
     <!-- Hero Section -->
     <section class="py-16 md:py-24">
         <div class="container mx-auto px-4">
@@ -540,7 +619,7 @@
             </div>
             
             <div class="text-center mt-12">
-                <p class="text-gray-600 mb-4">Precisa de ajuda para escolher? Fale com nosso time!</p>
+                <p class="text-gray-600 mb-4">Precisa de ajuda para escolher? Fale com nosso team!</p>
                 <button class="px-6 py-2 rounded-full border-2 border-dark text-dark font-semibold hover:bg-dark hover:text-white transition duration-300">
                     <i class="fab fa-whatsapp mr-2"></i> Chamar no WhatsApp
                 </button>
@@ -752,7 +831,7 @@
                 
                 <div class="bg-gray-50 rounded-xl p-6 shadow-sm">
                     <div class="flex items-center mb-4">
-                        <img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-12 h-12 rounded-full mr-4" alt="Cliente">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-12 h-12 rounded-full mr-4, alt="Cliente">
                         <div>
                             <h4 class="font-bold text-dark">Juliana Santos</h4>
                             <div class="flex items-center">
@@ -824,7 +903,7 @@
                     </button>
                     <div class="hidden px-5 pb-4">
                         <p class="text-gray-600">
-                            O cancelamento pode ser feito a qualquer momento pelo painel do usuário. No plano flexível, o cancelamento é imediato. Nos planos anual e vitalício, oferecemos reembolso proporcional caso solicitado nos primeiros 30 dias.
+                            O cancelamento pode be feito a qualquer momento pelo painel do usuário. No plano flexível, o cancelamento é imediato. Nos planos anual e vitalício, oferecemos reembolso proporcional caso solicitado nos primeiros 30 dias.
                         </p>
                     </div>
                 </div>
@@ -965,6 +1044,39 @@
     </footer>
 
     <script>
+        // Mobile Menu Functionality
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const overlay = document.getElementById('overlay');
+        const closeMenu = document.getElementById('closeMenu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        overlay.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('#mobileMenu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
         // FAQ Accordion
         document.querySelectorAll('.border-gray-200 button').forEach(button => {
             button.addEventListener('click', () => {
