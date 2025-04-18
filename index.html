@@ -289,6 +289,83 @@
             color: #333;
             cursor: pointer;
         }
+
+        /* Integration Icons */
+        .integration-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            font-size: 40px;
+            margin: 0 auto 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .openai-icon {
+            background-color: #10A37F;
+            color: white;
+        }
+
+        .deepseek-icon {
+            background-color: #3B82F6;
+            color: white;
+        }
+
+        .gemini-icon {
+            background-color: #8A2BE2;
+            color: white;
+        }
+
+        /* FAQ Styles */
+        .faq-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: #25D366;
+        }
+
+        .faq-question {
+            padding: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #1f2937;
+            background-color: #f9fafb;
+        }
+
+        .faq-question:hover {
+            background-color: #f3f4f6;
+        }
+
+        .faq-answer {
+            padding: 0 1.25rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: #4b5563;
+        }
+
+        .faq-answer.active {
+            padding: 1.25rem;
+            max-height: 500px;
+        }
+
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-icon.active {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100">
@@ -304,6 +381,7 @@
                     <a href="#" class="hover:text-white font-medium transition duration-300">Início</a>
                     <a href="#" class="hover:text-white font-medium transition duration-300">Recursos</a>
                     <a href="#" class="hover:text-white font-medium transition duration-300">Preços</a>
+                    <a href="#" class="hover:text-white font-medium transition duration-300">Integrações</a>
                     <a href="#" class="hover:text-white font-medium transition duration-300">FAQ</a>
                     <a href="#" class="hover:text-white font-medium transition duration-300">Contato</a>
                 </nav>
@@ -328,6 +406,7 @@
         <a href="#" class="hover:text-primary">Início</a>
         <a href="#" class="hover:text-primary">Recursos</a>
         <a href="#" class="hover:text-primary">Preços</a>
+        <a href="#" class="hover:text-primary">Integrações</a>
         <a href="#" class="hover:text-primary">FAQ</a>
         <a href="#" class="hover:text-primary">Contato</a>
         <div class="p-4">
@@ -337,7 +416,6 @@
         </div>
     </div>
 
-    <!-- Resto do conteúdo permanece igual -->
     <!-- Hero Section -->
     <section class="py-16 md:py-24">
         <div class="container mx-auto px-4">
@@ -452,6 +530,70 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integrations Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 text-sm font-semibold text-primary bg-purple-100 rounded-full mb-4">INTEGRAÇÕES</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Conecte com as melhores IAs do mercado</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    OzapGPT se integra perfeitamente com as principais plataformas de inteligência artificial
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- OpenAI -->
+                <div class="bg-gray-50 rounded-xl p-8 text-center transition duration-300 hover:shadow-lg">
+                    <div class="integration-icon openai-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">ChatGPT (OpenAI)</h3>
+                    <p class="text-gray-600 mb-4">
+                        Utilize todo o poder do GPT-4 para respostas mais inteligentes e contextualizadas no seu WhatsApp.
+                    </p>
+                    <div class="text-sm text-primary font-medium">
+                        <i class="fas fa-check-circle mr-1"></i> Suporte completo
+                    </div>
+                </div>
+                
+                <!-- DeepSeek -->
+                <div class="bg-gray-50 rounded-xl p-8 text-center transition duration-300 hover:shadow-lg">
+                    <div class="integration-icon deepseek-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">DeepSeek</h3>
+                    <p class="text-gray-600 mb-4">
+                        Integração com a poderosa IA da DeepSeek para análises profundas e respostas especializadas.
+                    </p>
+                    <div class="text-sm text-primary font-medium">
+                        <i class="fas fa-check-circle mr-1"></i> Suporte completo
+                    </div>
+                </div>
+                
+                <!-- Gemini -->
+                <div class="bg-gray-50 rounded-xl p-8 text-center transition duration-300 hover:shadow-lg">
+                    <div class="integration-icon gemini-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Gemini (Google)</h3>
+                    <p class="text-gray-600 mb-4">
+                        Conecte com a IA multimodal do Google para respostas ricas em contexto e multimídia.
+                    </p>
+                    <div class="text-sm text-primary font-medium">
+                        <i class="fas fa-check-circle mr-1"></i> Suporte completo
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-gray-600 mb-6">Quer integrar com outra plataforma? Nossa equipe pode ajudar!</p>
+                <button class="px-6 py-2 rounded-full bg-primary text-white font-semibold hover:bg-secondary transition duration-300">
+                    <i class="fas fa-headset mr-2"></i> Falar com Especialista
+                </button>
             </div>
         </div>
     </section>
@@ -655,7 +797,7 @@
                     </div>
                     <h3 class="text-xl font-bold text-dark mb-3">Chat Inteligente</h3>
                     <p class="text-gray-600">
-                        Nossa IA entende o contexto das conversas e responde de forma natural, como se fosse um atendente humano.
+                        Nuestra IA entende o contexto das conversas e responde de forma natural, como se fosse um atendente humano.
                     </p>
                 </div>
                 
@@ -742,7 +884,7 @@
                     </div>
                 </div>
                 
-                <div class="flex flex-col md:flex-row items-center mb-12">
+                <div class="flex flexocol md:flex-row items-center mb-12">
                     <div class="md:w-1/3 mb-6 md:mb-0 flex justify-center">
                         <div class="w-20 h-20 rounded-full bg-accent text-white flex items-center justify-center text-2xl font-bold">
                             3
@@ -784,10 +926,10 @@
                 </p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div class="bg-gray-50 rounded-xl p-6 shadow-sm">
                     <div class="flex items-center mb-4">
-                        <img src="https://randomuser.me/api/portraits/women/32.jpg" class="w-12 h-12 rounded-full mr-4" alt="Cliente">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" class="w-12 h-12 rounded-full mr-4, alt="Cliente">
                         <div>
                             <h4 class="font-bold text-dark">Ana Carolina</h4>
                             <div class="flex items-center">
@@ -831,7 +973,7 @@
                 
                 <div class="bg-gray-50 rounded-xl p-6 shadow-sm">
                     <div class="flex items-center mb-4">
-                        <img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-12 h-12 rounded-full mr-4, alt="Cliente">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-12 h-12 rounded-full mr-4" alt="Cliente">
                         <div>
                             <h4 class="font-bold text-dark">Juliana Santos</h4>
                             <div class="flex items-center">
@@ -850,6 +992,29 @@
                         <i class="fas fa-cut mr-1"></i> Salão de Beleza
                     </div>
                 </div>
+                
+                <!-- Nova Avaliação -->
+                <div class="bg-gray-50 rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-12 h-12 rounded-full mr-4" alt="Cliente">
+                        <div>
+                            <h4 class="font-bold text-dark">Carlos Eduardo</h4>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">
+                        "A integração com o ChatGPT foi um divisor de águas! Minhas respostas ficaram muito mais naturais e os clientes nem percebem que estão falando com uma IA. Recomendo demais!"
+                    </p>
+                    <div class="mt-4 text-sm text-gray-500">
+                        <i class="fas fa-utensils mr-1"></i> Restaurante
+                    </div>
+                </div>
             </div>
             
             <div class="mt-12 text-center">
@@ -865,69 +1030,165 @@
         <div class="container mx-auto px-4">
             <div class="text-center mb-16">
                 <span class="inline-block px-3 py-1 text-sm font-semibold text-primary bg-purple-100 rounded-full mb-4">DÚVIDAS</span>
-                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Perguntas frequentes</h2>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Perguntas Frequentes (FAQ) ❓</h2>
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Tire suas dúvidas sobre o OzapGPT
+                    Respondemos as dúvidas mais comuns para que você tenha a melhor experiência com o OzapGPT
                 </p>
             </div>
             
             <div class="max-w-3xl mx-auto space-y-4">
-                <div class="border border-gray-200 rounded-lg overflow-hidden">
-                    <button class="w-full px-5 py-4 text-left flex justify-between items-center">
-                        <span class="font-medium text-dark">Preciso instalar algum aplicativo no meu celular?</span>
-                        <i class="fas fa-chevron-down text-gray-500"></i>
-                    </button>
-                    <div class="hidden px-5 pb-4">
+                <!-- FAQ Item 1 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>O que é o OzapGPT?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
                         <p class="text-gray-600">
-                            Não! O OzapGPT funciona totalmente na nuvem. Você só precisa escanear o QR code uma vez para conectar sua conta do WhatsApp, e depois pode gerenciar tudo pelo nosso painel web.
+                            O OzapGPT é um aplicativo que você instala no seu computador, escaneia um QR Code do WhatsApp e conecta uma inteligência artificial para responder automaticamente às mensagens. De forma rápida e fácil, você pode personalizar as respostas e otimizar o atendimento no WhatsApp.
                         </p>
                     </div>
                 </div>
                 
-                <div class="border border-gray-200 rounded-lg overflow-hidden">
-                    <button class="w-full px-5 py-4 text-left flex justify-between items-center">
-                        <span class="font-medium text-dark">Posso usar em mais de um número de WhatsApp?</span>
-                        <i class="fas fa-chevron-down text-gray-500"></i>
-                    </button>
-                    <div class="hidden px-5 pb-4">
+                <!-- FAQ Item 2 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>O OzapGPT funciona com quais inteligências artificiais?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
                         <p class="text-gray-600">
-                            Sim! Cada número de WhatsApp requer uma assinatura separada. Oferecemos descontos especiais para quem precisa de múltiplas contas - entre em contato com nosso time comercial.
+                            Atualmente, o OzapGPT é compatível com GPT (OpenAI), Gemini (Google) e DeepSeek. Você pode escolher a que melhor atende às suas necessidades.
                         </p>
                     </div>
                 </div>
                 
-                <div class="border border-gray-200 rounded-lg overflow-hidden">
-                    <button class="w-full px-5 py-4 text-left flex justify-between items-center">
-                        <span class="font-medium text-dark">Como faço para cancelar meu plano?</span>
-                        <i class="fas fa-chevron-down text-gray-500"></i>
-                    </button>
-                    <div class="hidden px-5 pb-4">
+                <!-- FAQ Item 3 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Posso conectar mais de uma conta de WhatsApp?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
                         <p class="text-gray-600">
-                            O cancelamento pode be feito a qualquer momento pelo painel do usuário. No plano flexível, o cancelamento é imediato. Nos planos anual e vitalício, oferecemos reembolso proporcional caso solicitado nos primeiros 30 dias.
+                            Sim! Com o OzapGPT, você pode conectar quantas contas de WhatsApp quiser, sem custos adicionais por número.
                         </p>
                     </div>
                 </div>
                 
-                <div class="border border-gray-200 rounded-lg overflow-hidden">
-                    <button class="w-full px-5 py-4 text-left flex justify-between items-center">
-                        <span class="font-medium text-dark">O OzapGPT funciona com WhatsApp Business?</span>
-                        <i class="fas fa-chevron-down text-gray-500"></i>
-                    </button>
-                    <div class="hidden px-5 pb-4">
+                <!-- FAQ Item 4 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>O OzapGPT é vitalício?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
                         <p class="text-gray-600">
-                            Sim! O OzapGPT é compatível tanto com WhatsApp pessoal quanto Business. Na verdade, recomendamos o uso com WhatsApp Business para aproveitar melhor os recursos profissionais.
+                            Não mais. Agora ele funciona através de um modelo de assinatura, garantindo atualizações frequentes e suporte contínuo.
                         </p>
                     </div>
                 </div>
                 
-                <div class="border border-gray-200 rounded-lg overflow-hidden">
-                    <button class="w-full px-5 py-4 text-left flex justify-between items-center">
-                        <span class="font-medium text-dark">Quais métodos de pagamento são aceitos?</span>
-                        <i class="fas fa-chevron-down text-gray-500"></i>
-                    </button>
-                    <div class="hidden px-5 pb-4">
+                <!-- FAQ Item 5 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Preciso manter meu computador ligado para usar o OzapGPT?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
                         <p class="text-gray-600">
-                            Aceitamos cartões de crédito (todas as bandeiras), Pix, boleto bancário e transferência. Para pagamentos anuais e vitalícios, oferecemos condições especiais no boleto e transferência.
+                            Sim, o OzapGPT precisa estar rodando para continuar funcionando. Mas há uma solução ideal para isso: você pode hospedá-lo em uma nuvem por apenas $6/mês, sem limite de instâncias para contas de WhatsApp.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 6 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>O OzapGPT oferece suporte?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Sim! Oferecemos dois canais de atendimento: um suporte com atendimento humano via WhatsApp para usuários, e um contato com atendimento de IA para responder dúvidas de usuários e interessados.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 7 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>O que acontece se eu tiver dúvidas durante a configuração?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Após a compra, você terá acesso a vídeos explicativos que mostram todo o processo de configuração de forma detalhada, se não for o suficiente, temos um canal de suporte com atendentes reais para usuários.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 8 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Posso revender o OzapGPT para outras empresas?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Sim! Você pode usar o OzapGPT para conectar e automatizar o atendimento de outras empresas, aumentando sua renda. Lembrando que esse processo é feito dentro do seu Software, você não pode enviar o OzapGPT para outras pessoas.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 9 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Posso ganhar dinheiro com o OzapGPT?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Sim! Você pode oferecer o serviço para empresas, conectar o OzapGPT ao sistema delas e cobrar um valor pelo serviço de automação de atendimento, aumentando sua renda.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 10 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>O OzapGPT armazena as conversas dos usuários?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Não. O OzapGPT não guarda nenhuma informação das conversas. Todo o processamento ocorre localmente no seu computador, garantindo total privacidade e segurança.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 11 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>O OzapGPT é seguro para minha empresa?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Sim! Como o OzapGPT roda no seu próprio computador ou em um servidor privado, todas as informações ficam sob seu controle, sem acesso por terceiros.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 12 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Existe garantia de reembolso?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Sim! Oferecemos uma garantia de 7 dias. Caso o produto não seja útil para você, pode solicitar o reembolso dentro desse prazo.
                         </p>
                     </div>
                 </div>
@@ -950,7 +1211,7 @@
                 <p class="text-xl mb-8 opacity-90">
                     Comece agora e ganhe 7 dias grátis para testar todas as funcionalidades!
                 </p>
-                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <div class="flex flexocol sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                     <button class="px-8 py-3 rounded-full bg-white text-primary font-semibold hover:bg-opacity-90 transition duration-300 shadow-lg hover:shadow-xl">
                         Experimente Grátis <i class="fas fa-arrow-right ml-2"></i>
                     </button>
@@ -1024,7 +1285,7 @@
                 </div>
             </div>
             
-            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flexocol md:flex-row justify-between items-center">
                 <p class="text-gray-500 mb-4 md:mb-0">
                     © 2023 OzapGPT. Todos os direitos reservados.
                 </p>
@@ -1078,23 +1339,17 @@
         });
 
         // FAQ Accordion
-        document.querySelectorAll('.border-gray-200 button').forEach(button => {
-            button.addEventListener('click', () => {
-                const faqItem = button.parentElement;
-                const content = faqItem.querySelector('.hidden');
-                const icon = button.querySelector('i');
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.parentElement;
+                const answer = faqItem.querySelector('.faq-answer');
+                const icon = question.querySelector('.faq-icon');
                 
-                // Toggle content
-                content.classList.toggle('hidden');
+                // Toggle answer
+                answer.classList.toggle('active');
                 
                 // Toggle icon
-                if (content.classList.contains('hidden')) {
-                    icon.classList.remove('fa-chevron-up');
-                    icon.classList.add('fa-chevron-down');
-                } else {
-                    icon.classList.remove('fa-chevron-down');
-                    icon.classList.add('fa-chevron-up');
-                }
+                icon.classList.toggle('active');
             });
         });
         
