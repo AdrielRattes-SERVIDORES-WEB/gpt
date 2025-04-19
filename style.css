@@ -22,7 +22,33 @@ p {
 	border: 1px solid lightgray;
 	border-radius: 16px;
 }
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+}
 
+* {
+  box-sizing: border-box;
+}
+
+/* Container principal responsivo */
+.container {
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+/* WhatsApp Chat Container - Tamanho de Celular */
+.whatsapp-chat-container {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  transform: scale(0.9);
+  transform-origin: top center;
+}
 .card p:last-child {
 	margin-bottom: 0;
 }
