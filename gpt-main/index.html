@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OzapGPT - Seu Assistente de IA para WhatsApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#25D366', /* WhatsApp green */
+                        secondary: '#075E54', /* WhatsApp dark green */
+                        accent: '#128C7E', /* WhatsApp teal */
+                        whatsapp: '#25D366',
+                        w_dark: '#075E54',
+                        w_light: '#DCF8C6',
+                        w_reply: '#EDEDED',
+                        dark: '#1A1A2E',
+                        light: '#F5F5F7',
+                        gradient1: '#FF9A8B',
+                        gradient2: '#FF6B95',
+                        gradient3: '#FF8E53',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'pulse-glow': 'pulse-glow 2s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { boxShadow: '0 0 0 0 rgba(37, 211, 102, 0.7)' },
+                            '70%': { boxShadow: '0 0 0 10px rgba(37, 211, 102, 0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #25D366 0%, #075E54 100%);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 24px;
+        }
+        
+/* WhatsApp-like chat bubbles - VERSÃO CORRIGIDA (COLE ISSO NO LUGAR DO ANTIGO) */
+.chat-bubble {
+        position: relative;
+        border-radius: 7.5px;
+        padding: 8px 12px;
+        max-width: 85%;
+        margin-bottom: 6px;
+        font-size: 14px;
+        line-height: 1.4;
+        word-wrap: break-word;
+        box-sizing: border-box;
+    }
+    
+    .chat-bubble:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        width: 10px;
+        height: 10px;
+    }
+    
+    .user-bubble {
+        background-color: #DCF8C6;
+        color: #000;
+        align-self: flex-end;
+        border-top-right-radius: 0;
+        margin-left: 15%;
+        margin-right: 5px;
+    }
+    
+    .user-bubble:after {
+        right: -7px;
+        background-color: #DCF8C6;
+        clip-path: polygon(0 0, 100% 0, 100% 100%);
+    }
+    
+    .bot-bubble {
+        background-color: #FFFFFF;
+        color: #000;
+        align-self: flex-start;
+        border-top-left-radius: 0;
+        margin-right: 15%;
+        margin-left: 5px;
+        box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+    }
+    
+    .bot-bubble:after {
+        left: -7px;
+        background-color: #FFFFFF;
+        clip-path: polygon(0 0, 100% 0, 0 100%);
+    }
+    
+    .chat-time {
+        font-size: 11px;
+        color: #667781;
+        text-align: right;
+        margin-top: 2px;
+        margin-right: 0;
+        margin-bottom: 0;
+        padding-right: 4px;
+    }
+    
+    .whatsapp-header {
+        background-color: #F0F2F5;
+        border-bottom: 1px solid #E9EDEF;
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .whatsapp-input {
+        background-color: #F0F2F5;
+        border-radius: 8px;
+        border: none;
+        padding: 9px 12px;
+        font-size: 15px;
+        width: calc(100% - 20px);
+        margin: 0 10px;
+        box-sizing: border-box;
+    }
+    
+    .whatsapp-chat-container {
+        width: 100%;
+        max-width: 360px;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+    
+    .chat-messages-area {
+        height: 300px;
+        overflow-y: auto;
+        padding: 10px;
+        background-color: #e5ddd5;
+        background-image: url('https://web.whatsapp.com/img/bg-chat-tile-light_a4be512e7195b6b733d9110b408f075d.png');
+        background-repeat: repeat;
+        display: flex;
+        flex-direction: column;
+    }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .vitalicio-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: linear-gradient(135deg, #FF8E53 0%, #FF6B95 50%, #FF9A8B 100%);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            transform: rotate(15deg);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .ribbon {
+            width: 150px;
+            height: 150px;
+            overflow: hidden;
+            position: absolute;
+        }
+        
+        .ribbon::before,
+        .ribbon::after {
+            position: absolute;
+            z-index: -1;
+            content: '';
+            display: block;
+            border: 5px solid #FF6B95;
+        }
+        
+        .ribbon span {
+            position: absolute;
+            display: block;
+            width: 225px;
+            padding: 15px 0;
+            background-color: #FF6B95;
+            box-shadow: 0 5px 10px rgba(0,0,0,.1);
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        
+        .ribbon-top-right {
+            top: 0;
+            right: 0;
+        }
+        
+        .ribbon-top-right::before,
+        .ribbon-top-right::after {
+            border-top-color: transparent;
+            border-right-color: transparent;
+        }
+        
+        .ribbon-top-right::before {
+            top: 0;
+            left: 0;
+        }
+        
+        .ribbon-top-right::after {
+            bottom: 0;
+            right: 0;
+        }
+        
+        .ribbon-top-right span {
+            left: -25px;
+            top: 30px;
+            transform: rotate(45deg);
+        }
+
+        /* Mobile Menu Styles */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background-color: white;
+            z-index: 1000;
+            transition: right 0.3s ease;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            padding-top: 70px;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 15px 20px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s;
+        }
+
+        .mobile-menu a:hover {
+            background-color: #f5f5f5;
+            color: #25D366;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        /* Integration Icons */
+        .integration-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            font-size: 40px;
+            margin: 0 auto 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .openai-icon {
+            background-color: #10A37F;
+            color: white;
+        }
+
+        .deepseek-icon {
+            background-color: #3B82F6;
+            color: white;
+        }
+
+        .gemini-icon {
+            background-color: #8A2BE2;
+            color: white;
+        }
+
+        /* FAQ Styles */
+        .faq-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: #25D366;
+        }
+
+        .faq-question {
+            padding: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #1f2937;
+            background-color: #f9fafb;
+        }
+
+        .faq-question:hover {
+            background-color: #f3f4f6;
+        }
+
+        .faq-answer {
+            padding: 0 1.25rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: #4b5563;
+        }
+
+        .faq-answer.active {
+            padding: 1.25rem;
+            max-height: 500px;
+        }
+
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-icon.active {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fab fa-whatsapp text-3xl"></i>
+                    <h1 class="text-2xl font-bold">Ozap<span class="text-white">GPT</span></h1>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" class="hover:text-white font-medium transition duration-300">Início</a>
+                    <a href="#" class="hover:text-white font-medium transition duration-300">Recursos</a>
+                    <a href="#" class="hover:text-white font-medium transition duration-300">Preços</a>
+                    <a href="#" class="hover:text-white font-medium transition duration-300">Integrações</a>
+                    <a href="#" class="hover:text-white font-medium transition duration-300">FAQ</a>
+                    <a href="#" class="hover:text-white font-medium transition duration-300">Contato</a>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <button class="px-4 py-2 rounded-full bg-white text-primary font-semibold hover:bg-gray-100 transition duration-300">
+                        Entrar
+                    </button>
+                    <button id="mobile-menu-button" class="md:hidden text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="overlay" id="overlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="close-menu" id="closeMenu">
+            <i class="fas fa-times"></i>
+        </div>
+        <a href="#" class="hover:text-primary">Início</a>
+        <a href="#" class="hover:text-primary">Recursos</a>
+        <a href="#" class="hover:text-primary">Preços</a>
+        <a href="#" class="hover:text-primary">Integrações</a>
+        <a href="#" class="hover:text-primary">FAQ</a>
+        <a href="#" class="hover:text-primary">Contato</a>
+        <div class="p-4">
+            <button class="w-full px-4 py-2 rounded-full bg-primary text-white font-semibold hover:bg-opacity-90 transition duration-300">
+                Entrar
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="py-16 md:py-24">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-12 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold text-dark mb-6 leading-tight">
+                        Transforme seu WhatsApp com <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Inteligência Artificial</span>
+                    </h1>
+                    <p class="text-lg text-gray-600 mb-8">
+                        OzapGPT é o assistente de IA que vai revolucionar a forma como você usa o WhatsApp. Automatize respostas, gere conteúdo e muito mais!
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <button class="px-8 py-3 rounded-full bg-primary text-white font-semibold hover:bg-opacity-90 transition duration-300 shadow-lg hover:shadow-xl">
+                            Começar Agora <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                        <button class="px-8 py-3 rounded-full bg-white text-dark font-semibold border-2 border-primary hover:bg-gray-50 transition duration-300 shadow-lg hover:shadow-xl">
+                            <i class="fas fa-play-circle mr-2 text-secondary"></i> Ver Demonstração
+                        </button>
+                    </div>
+                    <div class="mt-8 flex items-center">
+                        <div class="flex -space-x-2">
+                            <img src="https://randomuser.me/api/portraits/women/12.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="User">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="User">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="User">
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">+5.000 usuários satisfeitos</p>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                <span class="text-sm font-medium text-gray-600 ml-1">5.0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 relative">
+                    <div class="relative max-w-md mx-auto">
+                        <div class="absolute -top-6 -left-6 w-24 h-24 rounded-full bg-gradient-to-r from-accent to-secondary opacity-20 animate-pulse"></div>
+                        <div class="absolute -bottom-6 -right-6 w-32 h-32 rounded-full bg-gradient-to-r from-primary to-accent opacity-20 animate-pulse"></div>
+                        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden transform rotate-1 border border-gray-200">
+                            <!-- WhatsApp-like header -->
+                            <div class="whatsapp-header flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                    <i class="fab fa-whatsapp text-primary text-xl"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-dark font-semibold">OzapGPT</h3>
+                                    <p class="text-xs text-gray-500">Online</p>
+                                </div>
+                                <div class="ml-auto flex space-x-3">
+                                    <i class="fas fa-search text-gray-500"></i>
+                                    <i class="fas fa-ellipsis-v text-gray-500"></i>
+                                </div>
+                            </div>
+                            
+                            <!-- WhatsApp-like chat -->
+                            <div class="p-4 h-80 overflow-y-auto flex flex-col space-y-3 bg-[#e5ddd5] bg-opacity-30 bg-[url('https://web.whatsapp.com/img/bg-chat-tile-light_a4be512e7195b6b733d9110b408f075d.png')]">
+                                <div class="chat-bubble bot-bubble">
+                                    Olá! Sou o OzapGPT, seu assistente de IA para WhatsApp. Como posso te ajudar hoje? 😊
+                                    <div class="chat-time">10:02</div>
+                                </div>
+                                <div class="chat-bubble user-bubble">
+                                    Quero automatizar respostas no meu WhatsApp
+                                    <div class="chat-time">10:03 <i class="fas fa-check-double text-blue-500 ml-1"></i></div>
+                                </div>
+                                <div class="chat-bubble bot-bubble">
+                                    Ótimo! Posso te ajudar com isso. Você pode configurar respostas automáticas para perguntas frequentes, encaminhar mensagens e muito mais! 🚀
+                                    <div class="chat-time">10:03</div>
+                                </div>
+                                <div class="chat-bubble user-bubble">
+                                    Isso é incrível! Como faço para começar?
+                                    <div class="chat-time">10:04 <i class="fas fa-check-double text-blue-500 ml-1"></i></div>
+                                </div>
+                                <div class="chat-bubble bot-bubble">
+                                    Basta se cadastrar no nosso site e conectar sua conta do WhatsApp. Vou te guiar passo a passo! 💡
+                                    <div class="chat-time">10:04</div>
+                                </div>
+                                <div class="chat-bubble bot-bubble">
+                                    Veja como fica na prática:
+                                    <div class="mt-2 bg-white p-2 rounded-lg border border-gray-200">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
+                                                <i class="fas fa-robot text-xs"></i>
+                                            </div>
+                                            <div class="ml-2">
+                                                <p class="text-xs font-medium">Resposta Automática</p>
+                                                <p class="text-xs text-gray-500">(configurado no OzapGPT)</p>
+                                            </div>
+                                        </div>
+                                        <p class="mt-2 text-sm">Olá! Agradecemos seu contato. Nossa equipe está offline no momento, mais já estou aqui para te ajudar! 😊</p>
+                                    </div>
+                                    <div class="chat-time">10:05</div>
+                                </div>
+                            </div>
+                            
+                            <!-- WhatsApp-like input -->
+                            <div class="p-3 bg-gray-50 flex items-center">
+                                <button class="w-10 h-10 rounded-full text-gray-500 hover:text-gray-700 flex items-center justify-center">
+                                    <i class="far fa-smile"></i>
+                                </button>
+                                <button class="w-10 h-10 rounded-full text-gray-500 hover:text-gray-700 flex items-center justify-center">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                                <input type="text" placeholder="Digite uma mensagem" class="flex-1 px-4 py-2 rounded-full whatsapp-input focus:outline-none">
+                                <button class="ml-2 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-opacity-90 transition duration-300">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integrations Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 text-sm font-semibold text-primary bg-purple-100 rounded-full mb-4">INTEGRAÇÕES</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Conecte com as melhores IAs do mercado</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    OzapGPT se integra perfeitamente com as principais plataformas de inteligência artificial
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- OpenAI -->
+                <div class="bg-gray-50 rounded-xl p-8 text-center transition duration-300 hover:shadow-lg">
+                    <div class="integration-icon openai-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">ChatGPT (OpenAI)</h3>
+                    <p class="text-gray-600 mb-4">
+                        Utilize todo o poder do GPT-4 para respostas mais inteligentes e contextualizadas no seu WhatsApp.
+                    </p>
+                    <div class="text-sm text-primary font-medium">
+                        <i class="fas fa-check-circle mr-1"></i> Suporte completo
+                    </div>
+                </div>
+                
+                <!-- DeepSeek -->
+                <div class="bg-gray-50 rounded-xl p-8 text-center transition duration-300 hover:shadow-lg">
+                    <div class="integration-icon deepseek-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">DeepSeek</h3>
+                    <p class="text-gray-600 mb-4">
+                        Integração com a poderosa IA da DeepSeek para análises profundas e respostas especializadas.
+                    </p>
+                    <div class="text-sm text-primary font-medium">
+                        <i class="fas fa-check-circle mr-1"></i> Suporte completo
+                    </div>
+                </div>
+                
+                <!-- Gemini -->
+                <div class="bg-gray-50 rounded-xl p-8 text-center transition duration-300 hover:shadow-lg">
+                    <div class="integration-icon gemini-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Gemini (Google)</h3>
+                    <p class="text-gray-600 mb-4">
+                        Conecte com a IA multimodal do Google para respostas ricas em contexto e multimídia.
+                    </p>
+                    <div class="text-sm text-primary font-medium">
+                        <i class="fas fa-check-circle mr-1"></i> Suporte completo
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-gray-600 mb-6">Quer integrar com outra plataforma? Nossa equipe pode ajudar!</p>
+                <button class="px-6 py-2 rounded-full bg-primary text-white font-semibold hover:bg-secondary transition duration-300">
+                    <i class="fas fa-headset mr-2"></i> Falar com Especialista
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 text-sm font-semibold text-primary bg-purple-100 rounded-full mb-4">PLANOS ESPECIAIS</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Escolha o melhor plano para você</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Invista no seu negócio com nossa tecnologia de ponta por um preço acessível.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Plano Flexível -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden transition duration-300 hover:shadow-xl card-hover relative">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-xl font-bold text-dark mb-2">Plano Flexível</h3>
+                        <p class="text-gray-600 mb-4">Sem compromisso - cancele quando quiser</p>
+                        <div class="mb-6">
+                            <span class="text-4xl font-bold text-dark">R$67</span>
+                            <span class="text-gray-500">/mês</span>
+                        </div>
+                        <button class="w-full px-4 py-3 rounded-full border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition duration-300">
+                            Assinar Plano
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <ul class="space-y-3">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-gray-600">Acesso a todas as funcionalidades</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-gray-600">Suporte durante 1 mês</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-gray-600">Cancele quando quiser</span>
+                            </li>
+                            <li class="flex items-center text-gray-400">
+                                <i class="fas fa-times mr-2"></i>
+                                <span>Atualizações futuras</span>
+                            </li>
+                            <li class="flex items-center text-gray-400">
+                                <i class="fas fa-times mr-2"></i>
+                                <span>Grupo exclusivo</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Plano Anual (Featured) -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden transform scale-105 z-10 border-2 border-primary relative">
+                    <div class="bg-primary text-white text-center py-2">
+                        <span class="font-semibold">MAIS ECONÔMICO</span>
+                    </div>
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-xl font-bold text-dark mb-2">Plano Anual</h3>
+                        <p class="text-gray-600 mb-4">Economize 39% com pagamento anual</p>
+                        <div class="mb-6">
+                            <span class="text-4xl font-bold text-dark">R$40,82</span>
+                            <span class="text-gray-500">/mês</span>
+                            <div class="text-sm text-gray-500 mt-1">À vista: R$397,00</div>
+                        </div>
+                        <button class="w-full px-4 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-semibold hover:opacity-90 transition duration-300">
+                            Assinar Plano
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <ul class="space-y-3">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-gray-600">Acesso a todas as funcionalidades</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-gray-600">Suporte prioritário durante 1 ano</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-gray-600">Atualizações inclusas</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-gray-600">Economize R$320 em 1 ano</span>
+                            </li>
+                            <li class="flex items-center text-gray-400">
+                                <i class="fas fa-times mr-2"></i>
+                                <span>Grupo exclusivo</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Plano Vitalício -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden transition duration-300 hover:shadow-xl card-hover relative">
+                    <div class="ribbon ribbon-top-right">
+                        <span>Oferta limitada</span>
+                    </div>
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-xl font-bold text-dark mb-2">Plano Vitalício</h3>
+                        <p class="text-gray-600 mb-4">Acesso vitalício por um preço único</p>
+                        <div class="mb-6">
+                            <span class="text-4xl font-bold text-dark">R$497</span>
+                            <span class="text-gray-500">/único</span>
+                            <div class="text-sm text-gray-500 mt-1">Parcelado: 12x de R$57,78</div>
+                        </div>
+                        <button class="w-full px-4 py-3 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold hover:opacity-90 transition duration-300 pulse-glow">
+                            GARANTIR VITALÍCIO
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <ul class="space-y-3">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-gray-600">Acesso VITALÍCIO a todas as funcionalidades</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-gray-600">TODAS as atualizações futuras incluídas</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-gray-600">Economize MILHARES em mensalidades</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-gray-600">Acesso ao GRUPO EXCLUSIVO de WhatsApp</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-gray-600">Suporte prioritário vitalício</span>
+                            </li>
+                        </ul>
+                        <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <p class="text-sm text-yellow-800 font-medium">
+                                <i class="fas fa-exclamation-circle text-yellow-500 mr-1"></i> 
+                                Oferta por tempo limitado! Economize R$3.000+ em 5 anos
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="md:flex">
+                    <div class="md:flex-shrink-0 bg-gradient-to-br from-primary to-secondary p-6 flex items-center justify-center">
+                        <i class="fas fa-video text-white text-4xl"></i>
+                    </div>
+                    <div class="p-8">
+                        <div class="uppercase tracking-wide text-sm text-primary font-semibold">NOVO</div>
+                        <a href="#" class="block mt-1 text-lg font-medium text-dark hover:text-primary">Veja o vídeo: Evolução do app e por que o plano vitalício é um excelente investimento!</a>
+                        <p class="mt-2 text-gray-600">
+                            Assista ao vídeo exclusivo onde mostramos a evolução do OzapGPT nos últimos meses e como o plano vitalício pode economizar milhares de reais para seu negócio a longo prazo.
+                        </p>
+                        <button class="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition duration-300">
+                            <i class="fas fa-play mr-2"></i> Assistir Vídeo
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <p class="text-gray-600 mb-4">Precisa de ajuda para escolher? Fale com nosso team!</p>
+                <button class="px-6 py-2 rounded-full border-2 border-dark text-dark font-semibold hover:bg-dark hover:text-white transition duration-300">
+                    <i class="fab fa-whatsapp mr-2"></i> Chamar no WhatsApp
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 text-sm font-semibold text-primary bg-purple-100 rounded-full mb-4">RECURSOS</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">O que o OzapGPT pode fazer por você</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Descubra como nossa solução pode automatizar e melhorar sua comunicação no WhatsApp
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gray-50 rounded-xl p-6 transition duration-300 hover:shadow-lg">
+                    <div class="feature-icon bg-green-100 text-primary mb-4">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Respostas Automáticas</h3>
+                    <p class="text-gray-600">
+                        Configure respostas automáticas para perguntas frequentes e nunca mais deixe um cliente sem resposta, mesmo fora do horário comercial.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6 transition duration-300 hover:shadow-lg">
+                    <div class="feature-icon bg-blue-100 text-blue-500 mb-4">
+                        <i class="fas fa-comment-dots"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Chat Inteligente</h3>
+                    <p class="text-gray-600">
+                        Nuestra IA entende o contexto das conversas e responde de forma natural, como se fosse um atendente humano.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6 transition duration-300 hover:shadow-lg">
+                    <div class="feature-icon bg-purple-100 text-purple-500 mb-4">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Mensagens em Massa</h3>
+                    <p class="text-gray-600">
+                        Envie campanhas promocionais ou comunicados importantes para todos os seus contatos de forma rápida e eficiente.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6 transition duration-300 hover:shadow-lg">
+                    <div class="feature-icon bg-yellow-100 text-yellow-500 mb-4">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Relatórios Detalhados</h3>
+                    <p class="text-gray-600">
+                        Acompanhe métricas importantes como taxa de resposta, tempo médio de atendimento e satisfação dos clientes.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6 transition duration-300 hover:shadow-lg">
+                    <div class="feature-icon bg-red-100 text-red-500 mb-4">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Segmentação</h3>
+                    <p class="text-gray-600">
+                        Classifique seus contatos por tags e envie mensagens específicas para cada grupo, aumentando a relevância.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6 transition duration-300 hover:shadow-lg">
+                    <div class="feature-icon bg-indigo-100 text-indigo-500 mb-4">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Integrações</h3>
+                    <p class="text-gray-600">
+                        Conecte com outras ferramentas como CRM, ERP e sistemas de pagamento para automatizar ainda mais seu fluxo.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 text-sm font-semibold text-primary bg-purple-100 rounded-full mb-4">FUNCIONAMENTO</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Como funciona o OzapGPT</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Em poucos passos você estará usando a inteligência artificial no seu WhatsApp
+                </p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="flex flex-col md:flex-row items-center mb-12">
+                    <div class="md:w-1/3 mb-6 md:mb-0 flex justify-center">
+                        <div class="w-20 h-20 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-bold">
+                            1
+                        </div>
+                    </div>
+                    <div class="md:w-2/3">
+                        <h3 class="text-xl font-bold text-dark mb-3">Cadastre-se no OzapGPT</h3>
+                        <p class="text-gray-600">
+                            Escolha seu plano e faça o cadastro em menos de 2 minutos. Você receberá um e-mail com as instruções para configurar sua conta.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col md:flex-row items-center mb-12">
+                    <div class="md:w-1/3 mb-6 md:mb-0 flex justify-center">
+                        <div class="w-20 h-20 rounded-full bg-secondary text-white flex items-center justify-center text-2xl font-bold">
+                            2
+                        </div>
+                    </div>
+                    <div class="md:w-2/3">
+                        <h3 class="text-xl font-bold text-dark mb-3">Conecte seu WhatsApp</h3>
+                        <p class="text-gray-600">
+                            Escaneie o QR code com seu celular para conectar sua conta do WhatsApp. Não é necessário instalar nada no seu telefone.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex flexocol md:flex-row items-center mb-12">
+                    <div class="md:w-1/3 mb-6 md:mb-0 flex justify-center">
+                        <div class="w-20 h-20 rounded-full bg-accent text-white flex items-center justify-center text-2xl font-bold">
+                            3
+                        </div>
+                    </div>
+                    <div class="md:w-2/3">
+                        <h3 class="text-xl font-bold text-dark mb-3">Configure suas automações</h3>
+                        <p class="text-gray-600">
+                            Defina respostas automáticas, mensagens de boas-vindas e fluxos de atendimento através do painel intuitivo.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/3 mb-6 md:mb-0 flex justify-center">
+                        <div class="w-20 h-20 rounded-full bg-gradient-to-r from-primary to-secondary text-white flex items-center justify-center text-2xl font-bold">
+                            4
+                        </div>
+                    </div>
+                    <div class="md:w-2/3">
+                        <h3 class="text-xl font-bold text-dark mb-3">Pronto! Sua IA já está ativa</h3>
+                        <p class="text-gray-600">
+                            A partir de agora o OzapGPT irá responder automaticamente às mensagens recebidas no seu WhatsApp, seguindo suas configurações.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 text-sm font-semibold text-primary bg-purple-100 rounded-full mb-4">AVALIAÇÕES</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">O que nossos clientes dizem</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Veja como o OzapGPT está transformando negócios como o seu
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-gray-50 rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" class="w-12 h-12 rounded-full mr-4, alt="Cliente">
+                        <div>
+                            <h4 class="font-bold text-dark">Ana Carolina</h4>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">
+                        "O OzapGPT revolucionou meu atendimento! Antes perdia muitas vendas por não conseguir responder rápido, agora minha IA atende 24/7 e já aumentei minhas vendas em 40%."
+                    </p>
+                    <div class="mt-4 text-sm text-gray-500">
+                        <i class="fas fa-store mr-1"></i> Loja de Cosméticos
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/men/54.jpg" class="w-12 h-12 rounded-full mr-4" alt="Cliente">
+                        <div>
+                            <h4 class="font-bold text-dark">Ricardo Almeida</h4>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">
+                        "Comprei o plano vitalício e foi a melhor decisão! Economizo R$800 por mês que gastava com atendentes, e a qualidade do atendimento até melhorou. O grupo exclusivo também é muito valioso."
+                    </p>
+                    <div class="mt-4 text-sm text-gray-500">
+                        <i class="fas fa-home mr-1"></i> Imobiliária
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-12 h-12 rounded-full mr-4" alt="Cliente">
+                        <div>
+                            <h4 class="font-bold text-dark">Juliana Santos</h4>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">
+                        "Adoro poder viajar e saber que meu negócio continua funcionando. O OzapGPT responde perguntas, envia orçamentos e até agenda serviços. Me deu liberdade e paz de espírito!"
+                    </p>
+                    <div class="mt-4 text-sm text-gray-500">
+                        <i class="fas fa-cut mr-1"></i> Salão de Beleza
+                    </div>
+                </div>
+                
+                <!-- Nova Avaliação -->
+                <div class="bg-gray-50 rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-12 h-12 rounded-full mr-4" alt="Cliente">
+                        <div>
+                            <h4 class="font-bold text-dark">Carlos Eduardo</h4>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">
+                        "A integração com o ChatGPT foi um divisor de águas! Minhas respostas ficaram muito mais naturais e os clientes nem percebem que estão falando com uma IA. Recomendo demais!"
+                    </p>
+                    <div class="mt-4 text-sm text-gray-500">
+                        <i class="fas fa-utensils mr-1"></i> Restaurante
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <button class="px-6 py-2 rounded-full border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition duration-300">
+                    Ver mais avaliações
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 text-sm font-semibold text-primary bg-purple-100 rounded-full mb-4">DÚVIDAS</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Perguntas Frequentes (FAQ) ❓</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Respondemos as dúvidas mais comuns para que você tenha a melhor experiência com o OzapGPT
+                </p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto space-y-4">
+                <!-- FAQ Item 1 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>O que é o OzapGPT?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            O OzapGPT é um aplicativo que você instala no seu computador, escaneia um QR Code do WhatsApp e conecta uma inteligência artificial para responder automaticamente às mensagens. De forma rápida e fácil, você pode personalizar as respostas e otimizar o atendimento no WhatsApp.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 2 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>O OzapGPT funciona com quais inteligências artificiais?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Atualmente, o OzapGPT é compatível com GPT (OpenAI), Gemini (Google) e DeepSeek. Você pode escolher a que melhor atende às suas necessidades.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 3 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Posso conectar mais de uma conta de WhatsApp?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Sim! Com o OzapGPT, você pode conectar quantas contas de WhatsApp quiser, sem custos adicionais por número.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 4 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>O OzapGPT é vitalício?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Não mais. Agora ele funciona através de um modelo de assinatura, garantindo atualizações frequentes e suporte contínuo.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 5 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Preciso manter meu computador ligado para usar o OzapGPT?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Sim, o OzapGPT precisa estar rodando para continuar funcionando. Mas há uma solução ideal para isso: você pode hospedá-lo em uma nuvem por apenas $6/mês, sem limite de instâncias para contas de WhatsApp.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 6 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>O OzapGPT oferece suporte?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Sim! Oferecemos dois canais de atendimento: um suporte com atendimento humano via WhatsApp para usuários, e um contato com atendimento de IA para responder dúvidas de usuários e interessados.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 7 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>O que acontece se eu tiver dúvidas durante a configuração?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Após a compra, você terá acesso a vídeos explicativos que mostram todo o processo de configuração de forma detalhada, se não for o suficiente, temos um canal de suporte com atendentes reais para usuários.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 8 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Posso revender o OzapGPT para outras empresas?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Sim! Você pode usar o OzapGPT para conectar e automatizar o atendimento de outras empresas, aumentando sua renda. Lembrando que esse processo é feito dentro do seu Software, você não pode enviar o OzapGPT para outras pessoas.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 9 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Posso ganhar dinheiro com o OzapGPT?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Sim! Você pode oferecer o serviço para empresas, conectar o OzapGPT ao sistema delas e cobrar um valor pelo serviço de automação de atendimento, aumentando sua renda.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 10 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>O OzapGPT armazena as conversas dos usuários?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Não. O OzapGPT não guarda nenhuma informação das conversas. Todo o processamento ocorre localmente no seu computador, garantindo total privacidade e segurança.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 11 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>O OzapGPT é seguro para minha empresa?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Sim! Como o OzapGPT roda no seu próprio computador ou em um servidor privado, todas as informações ficam sob seu controle, sem acesso por terceiros.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 12 -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Existe garantia de reembolso?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-gray-600">
+                            Sim! Oferecemos uma garantia de 7 dias. Caso o produto não seja útil para você, pode solicitar o reembolso dentro desse prazo.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-gray-600 mb-4">Não encontrou sua dúvida? Estamos aqui para ajudar!</p>
+                <button class="px-6 py-2 rounded-full bg-primary text-white font-semibold hover:bg-secondary transition duration-300">
+                    <i class="fas fa-question-circle mr-2"></i> Fale com o suporte
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 gradient-bg text-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">Pronto para revolucionar seu WhatsApp?</h2>
+                <p class="text-xl mb-8 opacity-90">
+                    Comece agora e ganhe 7 dias grátis para testar todas as funcionalidades!
+                </p>
+                <div class="flex flexocol sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <button class="px-8 py-3 rounded-full bg-white text-primary font-semibold hover:bg-opacity-90 transition duration-300 shadow-lg hover:shadow-xl">
+                        Experimente Grátis <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                    <button class="px-8 py-3 rounded-full border-2 border-white text-white font-semibold hover:bg-white hover:bg-opacity-10 transition duration-300 shadow-lg hover:shadow-xl">
+                        <i class="fab fa-whatsapp mr-2"></i> Falar com Vendas
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-gray-300 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fab fa-whatsapp text-2xl text-primary"></i>
+                        <h3 class="text-xl font-bold text-white">Ozap<span class="text-primary">GPT</span></h3>
+                    </div>
+                    <p class="mb-4">
+                        O assistente de IA que vai transformar sua comunicação no WhatsApp e alavancar seus resultados.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Produto</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-white transition duration-300">Recursos</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Preços</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Integrações</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Atualizações</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Roadmap</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Suporte</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-white transition duration-300">Documentação</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Tutoriais</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">FAQ</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Status</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Contato</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Empresa</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-white transition duration-300">Sobre nós</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Blog</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Carreiras</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Termos</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Privacidade</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flexocol md:flex-row justify-between items-center">
+                <p class="text-gray-500 mb-4 md:mb-0">
+                    © 2023 OzapGPT. Todos os direitos reservados.
+                </p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-white transition duration-300">
+                        Termos de Serviço
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-white transition duration-300">
+                        Política de Privacidade
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-white transition duration-300">
+                        Cookies
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Functionality
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const overlay = document.getElementById('overlay');
+        const closeMenu = document.getElementById('closeMenu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        overlay.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('#mobileMenu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.parentElement;
+                const answer = faqItem.querySelector('.faq-answer');
+                const icon = question.querySelector('.faq-icon');
+                
+                // Toggle answer
+                answer.classList.toggle('active');
+                
+                // Toggle icon
+                icon.classList.toggle('active');
+            });
+        });
+        
+        // Floating animation for elements with float class
+        document.querySelectorAll('.float').forEach(element => {
+            element.style.animation = 'float 3s ease-in-out infinite';
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Add WhatsApp-like message time to all chat bubbles
+        document.querySelectorAll('.chat-bubble').forEach(bubble => {
+            if (!bubble.querySelector('.chat-time')) {
+                const timeDiv = document.createElement('div');
+                timeDiv.className = 'chat-time';
+                timeDiv.textContent = '10:00';
+                if (bubble.classList.contains('user-bubble')) {
+                    timeDiv.innerHTML += ' <i class="fas fa-check-double text-blue-500 ml-1"></i>';
+                }
+                bubble.appendChild(timeDiv);
+            }
+        });
+    </script>
+</body>
+</html>
