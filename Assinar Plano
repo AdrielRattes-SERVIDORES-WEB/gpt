@@ -647,9 +647,11 @@
                             <span class="text-4xl font-bold text-dark">R$67</span>
                             <span class="text-gray-500">/mês</span>
                         </div>
-                        <button class="w-full px-4 py-3 rounded-full border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition duration-300">
+                        <a 
+                            href="https://pay.cakto.com.br/3crkc6r_333151?affiliate=SHUq2YDr"
+                            class="w-full px-4 py-3 rounded-full border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition duration-300">
                             Assinar Plano
-                        </button>
+                        </a>
                     </div>
                     <div class="p-6">
                         <ul class="space-y-3">
